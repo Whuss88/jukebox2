@@ -26,8 +26,7 @@ model Playlist {
   description String
   ownerId     Int
   owner       User   @relation(fields: [ownerId], references: [id])
-  track       Track? @relation(fields: [trackId], references: [id])
-  trackId     Int?
+ tracks       Track[]
 }
 
 model Track {

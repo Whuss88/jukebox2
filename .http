@@ -1,0 +1,51 @@
+
+@host = http://localhost:3000
+
+### Register a new user
+POST {{host}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "password": "password123"
+}
+
+### Login
+# @name login
+POST {{host}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "password": "password123"
+}
+
+### Get all playlists (protected route)
+@token = {{login.response.body.token}}
+GET {{host}}/playlists
+Authorization: Bearer {{token}}
+
+### Create a new playlist (protected route)
+POST {{host}}/playlists
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "My Playlist 2",
+  "description": "My favorite songs",
+  "trackIds": [5, 2, 8]
+}
+
+### Get specific playlist (protected route)
+GET {{host}}/playlists/2
+Authorization: Bearer {{token}}
+
+### Get all tracks
+GET {{host}}/tracks
+
+### Get specific track
+GET {{host}}/tracks/1
+
+### Get specific track (protected route)
+GET {{host}}/tracks/1
+Authorization: Bearer {{token}}

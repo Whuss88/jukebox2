@@ -1,26 +1,25 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcrypt');
+const { PrismaClient } = require('@prisma/client');
 
-const { PrismaClient } = require("@Prisma/client");
 const prisma = new PrismaClient().$extends({
   model: {
     user: {
-      async register(username, password){
+      async register(username, password) {
+        if (!password) throw new Error('Password is required');
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await prisma.user.create({
           data: { username, password: hashedPassword },
         });
         return user;
       },
-      async login(username, password){
-        const user = await prisma.user.findUniqueOrThrow({
-          where : { username },
-        });
+      async login(username, password) {
+        const user = await prisma.user.findUniqueOrThrow({ where: { username } });
         const valid = await bcrypt.compare(password, user.password);
-        if(!valid) throw Error("Invalid Password");
+        if (!valid) throw new Error('Invalid password');
         return user;
       }
-    },
-  },
+    }
+  }
 });
 
 module.exports = prisma;
